@@ -77,7 +77,9 @@ module.exports = {
       alwaysWriteToDisk: true,
       inlineSource: 'runtime~.+\\.js'
     }),
-    new InlineSourcePlugin()
+    new InlineSourcePlugin(),
+     // To strip all locales except “en”
+     new MomentLocalesPlugin()
   ].concat(
     isProduction
       ? []
