@@ -15,6 +15,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const InlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -68,14 +69,15 @@ module.exports = {
       template: 'src/templates/landing.html',
       filename: path.resolve(__dirname, 'public/index.html'),
       alwaysWriteToDisk: true,
+      inlineSource: 'runtime~.+\\.js'
     }),
     new HtmlWebpackPlugin({
       template: 'src/templates/app.html',
       filename: path.resolve(__dirname, 'public/users/index.html'),
       alwaysWriteToDisk: true,
+      inlineSource: 'runtime~.+\\.js'
     }),
-    // To strip all locales except “en”
-    new MomentLocalesPlugin()
+    new InlineSourcePlugin()
   ].concat(
     isProduction
       ? []
