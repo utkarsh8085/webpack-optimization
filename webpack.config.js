@@ -20,10 +20,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
-  entry: './src/index.js',
+  entry: { main : './src/index.js' },
+  optimization: {
+    runtimeChunk: true,
+    splitChunks: {
+      chunks:'all'
+    }
+  },
   output: {
     path: path.resolve(__dirname, 'public', 'build'),
-    filename: isProduction ? 'bundle.[chunkhash].js' : 'bundle.js',
+    filename: isProduction ? '[name].[chunkhash].js' : 'bundle.js',
     publicPath: '/build/',
   },
   module: {
