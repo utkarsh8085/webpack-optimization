@@ -14,11 +14,12 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  mode: 'development',
+  mode: isProduction ? 'production' : 'development',
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'public', 'build'),
@@ -38,8 +39,21 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: 'file-loader',
+        loader: 'svg-url-loader',
+        options: {
+          // Inline files smaller than 10 kB (10240 bytes)
+          limit: 10 * 1024,
+          // Remove the quotes from the url
+          // (they’re unnecessary in most cases)
+          noquotes: true,
+        }
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/,
+        loader: 'image-webpack-loader',
+        // This will apply the loader before the other ones
+        enforce: 'pre',
+      }
     ],
   },
   plugins: [
@@ -54,6 +68,8 @@ module.exports = {
       filename: path.resolve(__dirname, 'public/users/index.html'),
       alwaysWriteToDisk: true,
     }),
+    // To strip all locales except “en”
+    new MomentLocalesPlugin()
   ].concat(
     isProduction
       ? []
@@ -61,6 +77,8 @@ module.exports = {
           // Force writing the HTML files to disk when running in the development mode
           // (otherwise, webpack-dev-server won’t serve the app)
           new HtmlWebpackHarddiskPlugin(),
+          // To strip all locales except “en”
+          new MomentLocalesPlugin()
         ],
   ),
   devServer: {
