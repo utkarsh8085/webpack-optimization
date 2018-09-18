@@ -21,7 +21,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
-  entry: { main : './src/index.js' },
+  entry: { 
+    app: './src/app.js',
+    landing: './src/landing.js',
+  },
   optimization: {
     runtimeChunk: true,
     splitChunks: {
@@ -68,12 +71,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/templates/landing.html',
       filename: path.resolve(__dirname, 'public/index.html'),
+      excludeChunks: ['runtime~app', 'vendors~app', 'app'],
       alwaysWriteToDisk: true,
       inlineSource: 'runtime~.+\\.js'
     }),
     new HtmlWebpackPlugin({
       template: 'src/templates/app.html',
       filename: path.resolve(__dirname, 'public/users/index.html'),
+      excludeChunks: ['runtime~landing', 'vendors~landing', 'landing'],
       alwaysWriteToDisk: true,
       inlineSource: 'runtime~.+\\.js'
     }),
